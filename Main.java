@@ -16,10 +16,29 @@ class Main {
 	 			public void run() {
 	 					try {
 						System.out.println("Started new thread to handle connection: " + Thread.currentThread().getName());
-						System.out.println("zzzzz....");
-				 		Thread.sleep(10000);
-				 		System.out.println("I'm awake again");
-						System.out.println("Connection came in from: " + client.getRemoteSocketAddress());
+				 		System.out.println("Connection came in from: " + client.getRemoteSocketAddress());
+				 		InputStream input = client.getInputStream();
+				 		System.out.println("Input Stream received" + input);
+				 		StringBuilder sb = new StringBuilder();
+				 		byte[] buffer = new byte[8];
+				 		int bytesRead = 0;
+				 		int totalRead = 0;
+				 		boolean endOfMessage = false;
+				 		while(bytesRead != -1 && !endOfMessage) {
+				 			bytesRead = input.read(buffer, totalRead, buffer.length - totalRead);
+				 			totalRead += bytesRead;
+				 			System.out.println("Read " + bytesRead + "bytes, read " + totalRead + " so far");
+				 			endOfMessage = buffer[totalRead-1] == "\n".getBytes()[0];
+				 			if (totalRead >= buffer.length || endOfMessage) {
+				 				sb.append(new String(buffer));
+				 				buffer = new byte[8];
+				 				totalRead = 0;
+				 				bytesRead = 0;				 				
+				 			}
+
+						}
+				 		
+				 		System.out.println("Received from client: \"" + sb.toString().replaceAll("\n", "(newline)").replaceAll("\r", "(carriageReturn)") + "\"");
 						OutputStream output = client.getOutputStream();
 						output.write("\nhello\n\n".getBytes());
 						System.out.println("done handling client");
