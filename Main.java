@@ -33,12 +33,16 @@ class Main {
 				 				sb.append(new String(buffer));
 				 				buffer = new byte[8];
 				 				totalRead = 0;
-				 				bytesRead = 0;				 				
+				 				bytesRead = 0;
 				 			}
 
 						}
-				 		
-				 		System.out.println("Received from client: \"" + sb.toString().replaceAll("\n", "(newline)").replaceAll("\r", "(carriageReturn)") + "\"");
+						String clientMessage = sb.toString().trim();
+				 		if (clientMessage.startsWith("GET / ")) {
+							System.out.println("Index requested");
+						} else {
+							System.out.println("Received from client: " + clientMessage);
+						}
 						OutputStream output = client.getOutputStream();
 						output.write("\nhello\n\n".getBytes());
 						System.out.println("done handling client");
@@ -47,10 +51,8 @@ class Main {
 						throw new RuntimeException(e);
 					}
 	 			}
-	 			
+
 	 		}).start();
 		}
 	}
 }
-
-
