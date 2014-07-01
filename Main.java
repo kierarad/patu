@@ -37,14 +37,37 @@ class Main {
 				 			}
 
 						}
-						String clientMessage = sb.toString().trim();
-				 		if (clientMessage.startsWith("GET / ")) {
-							System.out.println("Index requested");
-						} else {
-							System.out.println("Received from client: " + clientMessage);
-						}
 						OutputStream output = client.getOutputStream();
-						output.write("\nhello\n\n".getBytes());
+						System.out.println("Output is: " + output);
+						String clientMessage = sb.toString().trim();
+						System.out.println("Received from client: " + clientMessage);
+							if (clientMessage.startsWith("GET / ")) {
+								System.out.println("handling index req");
+							InputStream fileContents = new FileInputStream("/Users/ThoughtWorker/Sites/index.html");
+								buffer = new byte[124];
+								int currentReadLength = 0;
+								int bufferPosition = 0;
+
+								while(true) {
+									if (bufferPosition >= buffer.length) {
+										buffer = new byte[124];
+										bufferPosition = 0;
+										currentReadLength = 0;
+									}
+
+									currentReadLength = fileContents.read(buffer, bufferPosition, buffer.length - bufferPosition);
+									if (currentReadLength == -1) {
+										break;
+									}
+									output.write(buffer, bufferPosition, currentReadLength);
+									bufferPosition += currentReadLength;
+								}
+							output.write("static file".getBytes());
+						} else {
+							output.write("\nhello\n\n".getBytes());
+						}
+
+
 						System.out.println("done handling client");
 						client.close();
 					} catch (Exception e) {
