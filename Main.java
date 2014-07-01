@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.lang.*;
+import java.util.regex.*;
 
 class Main {
 
@@ -39,34 +40,49 @@ class Main {
 						}
 						OutputStream output = client.getOutputStream();
 						System.out.println("Output is: " + output);
-						String clientMessage = sb.toString().trim();
-						System.out.println("Received from client: " + clientMessage);
-							if (clientMessage.startsWith("GET / ")) {
-								System.out.println("handling index req");
-							InputStream fileContents = new FileInputStream("/Users/ThoughtWorker/Sites/index.html");
-								buffer = new byte[124];
-								int currentReadLength = 0;
-								int bufferPosition = 0;
+						String[] lines = sb.toString().split("\n");
+						String clientMessage = lines[0].trim();
+						System.out.println(String.format("Received from client: (Length: %d) '%s'", clientMessage.length(), clientMessage));
 
-								while(true) {
-									if (bufferPosition >= buffer.length) {
-										buffer = new byte[124];
-										bufferPosition = 0;
-										currentReadLength = 0;
-									}
 
-									currentReadLength = fileContents.read(buffer, bufferPosition, buffer.length - bufferPosition);
-									if (currentReadLength == -1) {
-										break;
-									}
-									output.write(buffer, bufferPosition, currentReadLength);
-									bufferPosition += currentReadLength;
+						System.out.println("");
+						System.out.println("");
+						System.out.println("");
+
+						Pattern pattern = Pattern.compile("GET /([\\w\\.]*) HTTP.*");
+						Matcher matcher = pattern.matcher(clientMessage);
+						if (matcher.matches()) {
+						 	System.out.println("match! " + matcher);
+							String requestedFile = "index.html";
+							System.out.println(String.format("Match: '%s'", matcher.group(1)));
+							if (!matcher.group(1).equals("")) {
+									requestedFile = matcher.group(1);
+							}
+
+							System.out.println("");
+							InputStream fileContents = new FileInputStream("/Users/ThoughtWorker/Sites/" + requestedFile);
+							buffer = new byte[124];
+							int currentReadLength = 0;
+							int bufferPosition = 0;
+
+							while(true) {
+								if (bufferPosition >= buffer.length) {
+									buffer = new byte[124];
+									bufferPosition = 0;
+									currentReadLength = 0;
 								}
-							output.write("static file".getBytes());
-						} else {
-							output.write("\nhello\n\n".getBytes());
-						}
 
+								currentReadLength = fileContents.read(buffer, bufferPosition, buffer.length - bufferPosition);
+								if (currentReadLength == -1) {
+									break;
+								}
+								output.write(buffer, bufferPosition, currentReadLength);
+								bufferPosition += currentReadLength;
+							}
+
+						} else {
+							output.write("\n???? no match\n\n".getBytes());
+						}
 
 						System.out.println("done handling client");
 						client.close();
