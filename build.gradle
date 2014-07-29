@@ -3,7 +3,7 @@ apply plugin: 'application'
 
 sourceCompatibility = 1.7
 version = '1.0'
-mainClassName = "Main"
+mainClassName = "com.tw.kiera.patu.Main"
 jar {
   manifest {
     attributes 'Implementation-Title': 'patu', 'Implementation-Version': version
