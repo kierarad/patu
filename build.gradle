@@ -1,0 +1,11 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.7
+version = '1.0'
+mainClassName = "Main"
+jar {
+  manifest {
+    attributes 'Implementation-Title': 'patu', 'Implementation-Version': version
+  }
+}
