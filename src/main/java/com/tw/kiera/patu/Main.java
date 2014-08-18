@@ -8,25 +8,30 @@ import java.util.regex.*;
 class Main {
 
 	private boolean isRunning;
+    private Thread mainThread;
+    private ServerSocket serverSocket;
 
-	public void startAsync() {
-		new Thread(new Runnable(){
+    public void startAsync() {
+		this.mainThread = new Thread(new Runnable(){
 			public void run() {
 				startSync();
 			}
-		}).start();
-	}
+		});
+        this.mainThread.start();
+    }
+
+
 
 	public void startSync() {
 		try {
 			System.out.println("Starting patu web server");
 			final int port = 8080;
-			ServerSocket socket = new ServerSocket(port);
+			this.serverSocket = new ServerSocket(port);
 			System.out.println("patu listening on " + port + "...");
 			isRunning = true;
 			while(true) {
 				System.out.println("Listening again for a client");
-				final Socket client = socket.accept();
+				final Socket client = serverSocket.accept();
 				new Thread(new Runnable() {
 					public void run() {
 							try {
@@ -74,6 +79,8 @@ class Main {
 								}
 
 								System.out.println("");
+
+                                output.write("HTTP/1.1 200 OK\n\n".getBytes());
 								InputStream fileContents = new FileInputStream("/Users/ThoughtWorker/Sites/" + requestedFile);
 								buffer = new byte[124];
 								int currentReadLength = 0;
@@ -119,4 +126,13 @@ class Main {
 	public static void main (String... args) throws java.lang.Exception {
 		new Main().startAsync();
 	}
+
+    public void stop() {
+     this.mainThread.stop();
+        try {
+            this.serverSocket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
