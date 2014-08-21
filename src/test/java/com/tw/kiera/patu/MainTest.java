@@ -37,7 +37,7 @@ public class MainTest {
 
   @Test
   public void shouldBeAbleToHandleARequest()throws Exception {
-      HttpResponse request = getRequest();
+      HttpResponse request = getRequest("/");
       assertNotNull(request);
     assertEquals(200, request.getStatusLine().getStatusCode());
       ByteArrayOutputStream body = new ByteArrayOutputStream();
@@ -45,9 +45,26 @@ public class MainTest {
     assertTrue(String.valueOf(body).contains("<h1>"));
   }
 
-  private HttpResponse getRequest() throws Exception {
+  @Test
+  public void shouldRespondWithASpecificFile() throws Exception {
+      HttpResponse request = getRequest("/link.html");
+      assertNotNull(request);
+      assertEquals(200, request.getStatusLine().getStatusCode());
+      ByteArrayOutputStream body = new ByteArrayOutputStream();
+      request.getEntity().writeTo(body);
+      assertTrue(String.valueOf(body).contains("<h1>Link"));
+  }
+
+  @Test
+  public void shouldRespondWith404IfResourceForFileDoesNotExist() throws Exception {
+      HttpResponse request = getRequest("/nofile.html");
+      assertNotNull(request);
+      assertEquals(404, request.getStatusLine().getStatusCode());
+  }
+
+  private HttpResponse getRequest(String resourceRequested) throws Exception {
     CloseableHttpClient httpclient = HttpClients.createDefault();
-    HttpGet httpget = new HttpGet("http://localhost:8080/");
+    HttpGet httpget = new HttpGet("http://localhost:8080" + resourceRequested);
     CloseableHttpResponse response = httpclient.execute(httpget);
     return response;
   }
