@@ -43,7 +43,7 @@ class Main {
             public void run() {
                 System.out.println("Started new thread to handle connection: " + Thread.currentThread().getName());
                 try {
-                    String requestedFile = determineResourceRequested(client);
+                    File requestedFile = determineResourceRequested(client);
                     if (requestedFile == null) {
                         respondWith404(client);
                     } else {
@@ -67,12 +67,12 @@ class Main {
         output.write("HTTP/1.1 404 Not Found\n\n".getBytes());
     }
 
-    private void respondWithResource(String requestedFile, Socket client) throws IOException {
+    private void respondWithResource(File requestedFile, Socket client) throws IOException {
         OutputStream output = client.getOutputStream();
         System.out.println("Output is: " + output);
 
         output.write("HTTP/1.1 200 OK\n\n".getBytes());
-        InputStream fileContents = new FileInputStream("/Users/ThoughtWorker/Sites/" + requestedFile);
+        InputStream fileContents = new FileInputStream(requestedFile);
         byte[] buffer;
         buffer = new byte[124];
         int currentReadLength = 0;
@@ -94,7 +94,7 @@ class Main {
         }
     }
 
-    private String determineResourceRequested(Socket client) throws IOException {
+    private File determineResourceRequested(Socket client) throws IOException {
         String request = readRequest(client);
         String clientMessage = parseRequest(request);
 
@@ -102,12 +102,13 @@ class Main {
         Matcher matcher = pattern.matcher(clientMessage);
         if (matcher.matches()) {
             System.out.println("match! " + matcher);
-            String requestedFile = "index.html";
+            String requestedFilePath = "index.html";
             System.out.println(String.format("Match: '%s'", matcher.group(1)));
             if (!matcher.group(1).equals("")) {
-                requestedFile = matcher.group(1);
+                requestedFilePath = matcher.group(1);
             }
-            if (requestedFile )
+            File requestedFile = new File("/Users/ThoughtWorker/Sites/" + requestedFilePath);
+            if (!requestedFile.exists()) return null;
             return requestedFile;
         }
         throw new RuntimeException();
