@@ -43,8 +43,9 @@ class Main {
             public void run() {
                 System.out.println("Started new thread to handle connection: " + Thread.currentThread().getName());
                 try {
-                    File requestedFile = determineResourceRequested(client);
-                    if (requestedFile == null) {
+                    String requestedFilePath = determineResourceRequested(client);
+                    File requestedFile = new File("/Users/ThoughtWorker/Sites/" + requestedFilePath);
+                    if (!requestedFile.exists()) {
                         respondWith404(client);
                     } else {
                         respondWithResource(requestedFile, client);
@@ -94,7 +95,7 @@ class Main {
         }
     }
 
-    private File determineResourceRequested(Socket client) throws IOException {
+    private String determineResourceRequested(Socket client) throws IOException {
         String request = readRequest(client);
         String clientMessage = parseRequest(request);
 
@@ -107,9 +108,7 @@ class Main {
             if (!matcher.group(1).equals("")) {
                 requestedFilePath = matcher.group(1);
             }
-            File requestedFile = new File("/Users/ThoughtWorker/Sites/" + requestedFilePath);
-            if (!requestedFile.exists()) return null;
-            return requestedFile;
+            return requestedFilePath;
         }
         throw new RuntimeException();
     }
