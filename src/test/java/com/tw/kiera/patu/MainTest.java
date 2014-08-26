@@ -1,5 +1,6 @@
 package com.tw.kiera.patu;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -9,6 +10,7 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.net.*;
 
 public class MainTest {
@@ -61,6 +63,17 @@ public class MainTest {
       assertNotNull(request);
       assertEquals(404, request.getStatusLine().getStatusCode());
   }
+
+  @Test
+  public void shouldRespondToBadRequest() throws Exception {
+      String requestLine = "GET\n\n";
+      Socket client = new Socket("localhost", 8080);
+      OutputStream webServer = client.getOutputStream();
+      webServer.write(requestLine.getBytes());
+      String response = IOUtils.toString(client.getInputStream());
+      System.out.println("Body: " + response);
+
+    }
 
   private HttpResponse getRequest(String resourceRequested) throws Exception {
     CloseableHttpClient httpclient = HttpClients.createDefault();

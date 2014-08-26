@@ -44,6 +44,9 @@ class Main {
                 System.out.println("Started new thread to handle connection: " + Thread.currentThread().getName());
                 try {
                     String requestedFilePath = determineResourceRequested(client);
+                    if (requestedFilePath == null) {
+                        respondWith400(client);
+                    }
                     File requestedFile = new File("/Users/ThoughtWorker/Sites/" + requestedFilePath);
                     if (!requestedFile.exists()) {
                         respondWith404(client);
@@ -56,9 +59,15 @@ class Main {
                     throw new RuntimeException(e);
                 }
             }
-
         }).start();
 
+    }
+
+    private void respondWith400(Socket client) throws IOException {
+        OutputStream output = client.getOutputStream();
+        System.out.println("Output is: " + output);
+
+        output.write("HTTP/1.1 400 Bad Request\n\n".getBytes());
     }
 
     private void respondWith404(Socket client) throws IOException {
@@ -110,7 +119,7 @@ class Main {
             }
             return requestedFilePath;
         }
-        throw new RuntimeException();
+        return null;
     }
 
     private String parseRequest(String request) {
