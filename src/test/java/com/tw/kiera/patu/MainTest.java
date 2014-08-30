@@ -32,7 +32,6 @@ public class MainTest {
         this.server.stop();
     }
 
-
     @Test
     public void shouldListenOn8080() throws Exception {
         assertTrue(canConnectTo(DEFAULT_PORT));

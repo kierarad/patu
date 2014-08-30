@@ -47,7 +47,7 @@ public class RequestHandlerTest {
         assertEquals(200, request.getStatusLine().getStatusCode());
         ByteArrayOutputStream body = new ByteArrayOutputStream();
         request.getEntity().writeTo(body);
-        assertTrue(String.valueOf(body).contains("<h1>"));
+        assertTrue(String.valueOf(body).contains("<title>home</title>"));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class RequestHandlerTest {
         assertEquals(200, request.getStatusLine().getStatusCode());
         ByteArrayOutputStream body = new ByteArrayOutputStream();
         request.getEntity().writeTo(body);
-        assertTrue(String.valueOf(body).contains("<h1>Link"));
+        assertTrue(String.valueOf(body).contains("<title>link</title>"));
     }
 
     @Test
