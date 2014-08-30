@@ -20,7 +20,7 @@ public class MainTest {
 
     @Before
     public void startServer() throws Exception {
-        this.server = new Main();
+        server = new Main();
         server.startAsync();
         while(!server.isRunning()) {
             Thread.sleep(100);
@@ -35,6 +35,18 @@ public class MainTest {
     @Test
     public void shouldListenOn8080() throws Exception {
         assertTrue(canConnectTo(DEFAULT_PORT));
+    }
+
+    @Test
+    public void allowAllowPortToBeSpecifiedWithCmdLineArgs() throws InterruptedException {
+        server.stop();
+        server = new Main("-p", "7777");
+        server.startAsync();
+        while(!server.isRunning()) {
+            Thread.sleep(100);
+        }
+        assertEquals(7777, server.getPort());
+
     }
 
     private boolean canConnectTo(int port) throws Exception {
