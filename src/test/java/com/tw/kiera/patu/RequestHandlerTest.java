@@ -28,7 +28,7 @@ public class RequestHandlerTest {
 
     @Before
     public void startServer() throws Exception {
-        this.server = new Main();
+        this.server = new Main(MainTest.DEFAULT_PORT, "./src/test/data");
         server.startAsync();
         while(!server.isRunning()) {
             Thread.sleep(100);
