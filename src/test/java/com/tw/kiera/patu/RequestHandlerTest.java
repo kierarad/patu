@@ -78,6 +78,26 @@ public class RequestHandlerTest {
 
     }
 
+    @Test
+    public void shouldRespondWithResourceIfInSubfolder() throws Exception {
+        HttpResponse request = getRequest("/subfolder/subfile.txt");
+        assertNotNull(request);
+        assertEquals(200, request.getStatusLine().getStatusCode());
+        ByteArrayOutputStream body = new ByteArrayOutputStream();
+        request.getEntity().writeTo(body);
+        assertTrue(String.valueOf(body).contains("hello"));
+    }
+
+    @Test
+    public void shouldRespondWithResourceRequestedInParentFolder() throws Exception {
+        HttpResponse request = getRequest("/subfolder/../link.html");
+        assertNotNull(request);
+        assertEquals(200, request.getStatusLine().getStatusCode());
+        ByteArrayOutputStream body = new ByteArrayOutputStream();
+        request.getEntity().writeTo(body);
+        assertTrue(String.valueOf(body).contains("<title>link</title>"));
+    }
+
     private HttpResponse getRequest(String resourceRequested) throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://localhost:" + MainTest.DEFAULT_PORT + resourceRequested);

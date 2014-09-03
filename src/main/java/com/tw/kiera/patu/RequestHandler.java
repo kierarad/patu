@@ -89,7 +89,7 @@ public class RequestHandler {
         String request = readRequest(client);
         String clientMessage = parseRequest(request);
 
-        Pattern pattern = Pattern.compile("GET /([\\w\\.]*) HTTP.*");
+        Pattern pattern = Pattern.compile("GET /([^\b]*) HTTP.*");
         Matcher matcher = pattern.matcher(clientMessage);
         if (matcher.matches()) {
             System.out.println("match! " + matcher);
