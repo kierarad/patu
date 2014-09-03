@@ -9,6 +9,13 @@ import java.util.regex.Pattern;
  * Created by ThoughtWorker on 8/26/14.
  */
 public class RequestHandler {
+
+    private final String docRoot;
+
+    public RequestHandler(String docRoot) {
+        this.docRoot = docRoot;
+    }
+
     public void handleRequest(final Socket client) {
         System.out.println("Connection came in from: " + client.getRemoteSocketAddress());
         new Thread(new Runnable() {
@@ -21,7 +28,8 @@ public class RequestHandler {
                     if (requestedFilePath == null) {
                         respondWith400(client);
                     }
-                    File requestedFile = new File("/Users/ThoughtWorker/Sites/" + requestedFilePath);
+                    File requestedFile = new File(docRoot + "/" + requestedFilePath);
+                    System.out.println(requestedFile);
                     if (!requestedFile.exists()) {
                         respondWith404(client);
                     } else {

@@ -28,7 +28,7 @@ public class RequestHandlerTest {
 
     @Before
     public void startServer() throws Exception {
-        this.server = new Main();
+        this.server = new Main(MainTest.DEFAULT_PORT, "./src/test/data");
         server.startAsync();
         while(!server.isRunning()) {
             Thread.sleep(100);
@@ -47,7 +47,7 @@ public class RequestHandlerTest {
         assertEquals(200, request.getStatusLine().getStatusCode());
         ByteArrayOutputStream body = new ByteArrayOutputStream();
         request.getEntity().writeTo(body);
-        assertTrue(String.valueOf(body).contains("<h1>"));
+        assertTrue(String.valueOf(body).contains("<title>home</title>"));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class RequestHandlerTest {
         assertEquals(200, request.getStatusLine().getStatusCode());
         ByteArrayOutputStream body = new ByteArrayOutputStream();
         request.getEntity().writeTo(body);
-        assertTrue(String.valueOf(body).contains("<h1>Link"));
+        assertTrue(String.valueOf(body).contains("<title>link</title>"));
     }
 
     @Test
