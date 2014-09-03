@@ -98,6 +98,12 @@ public class RequestHandlerTest {
         assertTrue(String.valueOf(body).contains("<title>link</title>"));
     }
 
+    @Test
+    public void shouldRespondWith404IfResourceForFileOutsideOfDocFolder() throws Exception {
+        HttpResponse request = getRequest("/../kiera-secret-file.txt");
+        assertEquals(404, request.getStatusLine().getStatusCode());
+    }
+
     private HttpResponse getRequest(String resourceRequested) throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://localhost:" + MainTest.DEFAULT_PORT + resourceRequested);

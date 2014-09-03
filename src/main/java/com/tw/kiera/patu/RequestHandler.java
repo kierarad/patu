@@ -13,7 +13,11 @@ public class RequestHandler {
     private final String docRoot;
 
     public RequestHandler(String docRoot) {
-        this.docRoot = docRoot;
+        try {
+            this.docRoot = new File(docRoot).getCanonicalPath();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void handleRequest(final Socket client) {
@@ -30,7 +34,7 @@ public class RequestHandler {
                     }
                     File requestedFile = new File(docRoot + "/" + requestedFilePath);
                     System.out.println(requestedFile);
-                    if (!requestedFile.exists()) {
+                    if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
                         respondWith404(client);
                     } else {
                         respondWithResource(requestedFile, client);
@@ -42,6 +46,14 @@ public class RequestHandler {
                 }
             }
         }).start();
+    }
+
+    private boolean outsideOfDocRoot(File requestedFile) {
+        try {
+            return !requestedFile.getCanonicalPath().startsWith(docRoot);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void respondWith400(Socket client) throws IOException {
