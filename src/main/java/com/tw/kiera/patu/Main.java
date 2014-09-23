@@ -1,5 +1,6 @@
 package com.tw.kiera.patu;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -67,7 +68,8 @@ class Main {
 			while(true) {
 				System.out.println("Listening again for a client");
 				final Socket client = serverSocket.accept();
-                new RequestHandler(docRoot).handleRequest(client);
+//                TODO: Repair Main so that request handler can handle requests as strings
+//                new RequestHandler(docRoot).handleRequest(client);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -1,5 +1,7 @@
 package com.tw.kiera.patu;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.regex.Matcher;
@@ -20,32 +22,45 @@ public class RequestHandler {
         }
     }
 
-    public void handleRequest(final Socket client) {
-        System.out.println("Connection came in from: " + client.getRemoteSocketAddress());
-        new Thread(new Runnable() {
+    public Response handleRequest(final String request) throws IOException {
+        String requestedFilePath = determineResourceRequested(request);
+        if (requestedFilePath == null) {
+            return Response.BAD_REQUEST;
+        }
+        File requestedFile = new File(docRoot + "/" + requestedFilePath);
+        if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
+            return Response.NOT_FOUND;
+        }
 
-
-            public void run() {
-                System.out.println("Started new thread to handle connection: " + Thread.currentThread().getName());
-                try {
-                    String requestedFilePath = determineResourceRequested(client);
-                    if (requestedFilePath == null) {
-                        respondWith400(client);
-                    }
-                    File requestedFile = new File(docRoot + "/" + requestedFilePath);
-                    System.out.println(requestedFile);
-                    if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
-                        respondWith404(client);
-                    } else {
-                        respondWithResource(requestedFile, client);
-                    }
-                    System.out.println("done handling client");
-                    client.close();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
+        Response response = new Response();
+        response.setBody(respondWithResource(requestedFile));
+        response.setStatusCode(200);
+        return response;
+//        System.out.println("Connection came in from: " + client.getRemoteSocketAddress());
+//        new Thread(new Runnable() {
+//
+//
+//            public void run() {
+//                System.out.println("Started new thread to handle connection: " + Thread.currentThread().getName());
+//                try {
+//                    String requestedFilePath = determineResourceRequested(client);
+//                    if (requestedFilePath == null) {
+//                        respondWith400(client);
+//                    }
+//                    File requestedFile = new File(docRoot + "/" + requestedFilePath);
+//                    System.out.println(requestedFile);
+//                    if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
+//                        respondWith404(client);
+//                    } else {
+//                        respondWithResource(requestedFile, client);
+//                    }
+//                    System.out.println("done handling client");
+//                    client.close();
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }).start();
     }
 
     private boolean outsideOfDocRoot(File requestedFile) {
@@ -56,51 +71,12 @@ public class RequestHandler {
         }
     }
 
-    private void respondWith400(Socket client) throws IOException {
-        OutputStream output = client.getOutputStream();
-        System.out.println("Output is: " + output);
-
-        output.write("HTTP/1.1 400 Bad Request\n\n".getBytes());
+    private String respondWithResource(File requestedFile) throws IOException {
+        return IOUtils.toString(new FileInputStream(requestedFile));
     }
 
-    private void respondWith404(Socket client) throws IOException {
-        OutputStream output = client.getOutputStream();
-        System.out.println("Output is: " + output);
-
-        output.write("HTTP/1.1 404 Not Found\n\n".getBytes());
-    }
-
-    private void respondWithResource(File requestedFile, Socket client) throws IOException {
-        OutputStream output = client.getOutputStream();
-        System.out.println("Output is: " + output);
-
-        output.write("HTTP/1.1 200 OK\n\n".getBytes());
-        InputStream fileContents = new FileInputStream(requestedFile);
-        byte[] buffer;
-        buffer = new byte[124];
-        int currentReadLength = 0;
-        int bufferPosition = 0;
-
-        while(true) {
-            if (bufferPosition >= buffer.length) {
-                buffer = new byte[124];
-                bufferPosition = 0;
-                currentReadLength = 0;
-            }
-
-            currentReadLength = fileContents.read(buffer, bufferPosition, buffer.length - bufferPosition);
-            if (currentReadLength == -1) {
-                break;
-            }
-            output.write(buffer, bufferPosition, currentReadLength);
-            bufferPosition += currentReadLength;
-        }
-    }
-
-    private String determineResourceRequested(Socket client) throws IOException {
-        String request = readRequest(client);
+    private String determineResourceRequested(String request) throws IOException {
         String clientMessage = parseRequest(request);
-
         Pattern pattern = Pattern.compile("GET /([^\b]*) HTTP.*");
         Matcher matcher = pattern.matcher(clientMessage);
         if (matcher.matches()) {
