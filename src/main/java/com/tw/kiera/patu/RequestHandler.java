@@ -97,30 +97,5 @@ public class RequestHandler {
         System.out.println(String.format("Received from client: (Length: %d) '%s'", clientMessage.length(), clientMessage));
         return clientMessage;
     }
-
-    private String readRequest(Socket client) throws IOException {
-        InputStream input = client.getInputStream();
-        System.out.println("Input Stream received" + input);
-        StringBuilder sb = new StringBuilder();
-        byte[] buffer = new byte[8];
-        int bytesRead = 0;
-        int totalRead = 0;
-        boolean endOfMessage = false;
-        while(bytesRead != -1 && !endOfMessage) {
-            bytesRead = input.read(buffer, totalRead, buffer.length - totalRead);
-            totalRead += bytesRead;
-            System.out.println("Read " + bytesRead + "bytes, read " + totalRead + " so far");
-            endOfMessage = buffer[totalRead-1] == "\n".getBytes()[0];
-            if (totalRead >= buffer.length || endOfMessage) {
-                sb.append(new String(buffer));
-                buffer = new byte[8];
-                totalRead = 0;
-                bytesRead = 0;
-            }
-
-        }
-        return sb.toString();
-    }
-
 }
 
