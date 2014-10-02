@@ -1,7 +1,7 @@
 package com.tw.kiera.patu;
 
-import com.sun.org.apache.regexp.internal.recompile;
-import com.sun.xml.internal.bind.v2.TODO;
+
+import org.apache.commons.io.IOUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -79,26 +79,8 @@ class Main {
 
     private String readRequest(Socket client) throws IOException {
         InputStream input = client.getInputStream();
-        System.out.println("Input Stream received" + input);
-        StringBuilder sb = new StringBuilder();
-        byte[] buffer = new byte[8];
-        int bytesRead = 0;
-        int totalRead = 0;
-        boolean endOfMessage = false;
-        while(bytesRead != -1 && !endOfMessage) {
-            bytesRead = input.read(buffer, totalRead, buffer.length - totalRead);
-            totalRead += bytesRead;
-            System.out.println("Read " + bytesRead + "bytes, read " + totalRead + " so far");
-            endOfMessage = buffer[totalRead-1] == "\n".getBytes()[0];
-            if (totalRead >= buffer.length || endOfMessage) {
-                sb.append(new String(buffer));
-                buffer = new byte[8];
-                totalRead = 0;
-                bytesRead = 0;
-            }
-
-        }
-        return sb.toString();
+        System.out.println("Input Stream received " + input);
+        return IOUtils.toString(input);
     }
 
 
