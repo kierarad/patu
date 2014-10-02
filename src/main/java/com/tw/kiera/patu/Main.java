@@ -1,7 +1,9 @@
 package com.tw.kiera.patu;
 
 
+import com.google.common.base.Joiner;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -9,7 +11,9 @@ import org.kohsuke.args4j.Option;
 import java.io.*;
 import java.net.*;
 import java.lang.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.*;
 
 class Main {
@@ -80,7 +84,7 @@ class Main {
     private String readRequest(Socket client) throws IOException {
         InputStream input = client.getInputStream();
         System.out.println("Input Stream received " + input);
-        return IOUtils.toString(input);
+        return buildRequest(input);
     }
 
 
@@ -110,5 +114,20 @@ class Main {
 
     public int getPort() {
         return this.port;
+    }
+
+    static String buildRequest(InputStream input) throws IOException {
+        LineIterator lineIterator = IOUtils.lineIterator(input, "UTF-8");
+        List<String> lines = new ArrayList<String>();
+        while (lineIterator.hasNext()) {
+            System.out.println("has next");
+            String line = lineIterator.nextLine();
+            System.out.println("line => " + line);
+            if (line.equals("\n")) {
+                break;
+            }
+            lines.add(line);
+        }
+        return Joiner.on("\n").join(lines);
     }
 }

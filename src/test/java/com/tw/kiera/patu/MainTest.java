@@ -1,16 +1,12 @@
 package com.tw.kiera.patu;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import com.google.common.io.ByteSource;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.*;
 
 public class MainTest {
@@ -47,6 +43,34 @@ public class MainTest {
         }
         assertEquals(7777, server.getPort());
 
+    }
+
+    @Test
+    public void pieceTogetherARequest() throws Exception {
+        final String request = "GET / HTTP/1.0\n";
+        InputStream neverEndingInput = new InputStream() {
+
+            private int currentPosition = 0;
+
+            @Override
+            public int read() throws IOException {
+                if (currentPosition < request.length()) {
+                    return request.getBytes()[currentPosition++];
+                } else {
+                    try {
+                        synchronized (this) {
+                            this.wait();
+                        }
+
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                throw new RuntimeException();
+            }
+        };
+        String requestString = Main.buildRequest(neverEndingInput);
+        assertEquals(requestString, request.trim());
     }
 
     private boolean canConnectTo(int port) throws Exception {
