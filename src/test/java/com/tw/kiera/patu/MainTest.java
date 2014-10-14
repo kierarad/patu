@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.*;
 
 public class MainTest {
@@ -45,36 +46,10 @@ public class MainTest {
 
     }
 
-    @Test
-    public void pieceTogetherARequest() throws Exception {
-        final String request = "GET / HTTP/1.0\n";
-        InputStream neverEndingInput = new InputStream() {
-
-            private int currentPosition = 0;
-
-            @Override
-            public int read() throws IOException {
-                if (currentPosition < request.length()) {
-                    return request.getBytes()[currentPosition++];
-                } else {
-                    try {
-                        synchronized (this) {
-                            this.wait();
-                        }
-
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                throw new RuntimeException();
-            }
-        };
-        String requestString = Main.buildRequest(neverEndingInput);
-        assertEquals(requestString, request.trim());
-    }
-
     private boolean canConnectTo(int port) throws Exception {
         Socket s = new Socket(InetAddress.getLocalHost(), port);
         return s.isConnected();
     }
+
+
 }

@@ -72,10 +72,23 @@ class Main {
 			isRunning = true;
 			while(true) {
 				System.out.println("Listening again for a client");
-				final Socket client = serverSocket.accept();
-                String request = readRequest(client);
-                new RequestHandler(docRoot).handleRequest(request);
-			}
+                Socket client = null;
+                try {
+                    client = serverSocket.accept();
+                    String request = readRequest(client);
+                    Response response = new RequestHandler(docRoot).handleRequest(request);
+                    OutputStream output = client.getOutputStream();
+                    output.write(response.toString().getBytes());
+                } catch (Exception e) {
+                    System.out.println(String.format("error handling %s: %s", client.getRemoteSocketAddress(), e.getMessage()));
+                } finally {
+                    try {
+                        client.close();
+                    } catch(Exception e) {
+                        System.out.println("Error closing client: " + e.getMessage());
+                    }
+                }
+            }
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -119,11 +132,14 @@ class Main {
     static String buildRequest(InputStream input) throws IOException {
         LineIterator lineIterator = IOUtils.lineIterator(input, "UTF-8");
         List<String> lines = new ArrayList<String>();
-        while (lineIterator.hasNext()) {
-            System.out.println("has next");
+
+        while (true) {
+            if (!lineIterator.hasNext()) {
+                System.out.println("no more");
+                break;
+            }
             String line = lineIterator.nextLine();
-            System.out.println("line => " + line);
-            if (line.equals("\n")) {
+            if ("".equals(line.trim())) {
                 break;
             }
             lines.add(line);

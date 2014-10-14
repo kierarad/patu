@@ -36,31 +36,6 @@ public class RequestHandler {
         response.setBody(respondWithResource(requestedFile));
         response.setStatusCode(200);
         return response;
-//        System.out.println("Connection came in from: " + client.getRemoteSocketAddress());
-//        new Thread(new Runnable() {
-//
-//
-//            public void run() {
-//                System.out.println("Started new thread to handle connection: " + Thread.currentThread().getName());
-//                try {
-//                    String requestedFilePath = determineResourceRequested(client);
-//                    if (requestedFilePath == null) {
-//                        respondWith400(client);
-//                    }
-//                    File requestedFile = new File(docRoot + "/" + requestedFilePath);
-//                    System.out.println(requestedFile);
-//                    if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
-//                        respondWith404(client);
-//                    } else {
-//                        respondWithResource(requestedFile, client);
-//                    }
-//                    System.out.println("done handling client");
-//                    client.close();
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }).start();
     }
 
     private boolean outsideOfDocRoot(File requestedFile) {
