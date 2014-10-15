@@ -45,7 +45,6 @@ class Main {
     }
 
     public Main(String... args) {
-        this();
         System.out.println(Arrays.asList(args));
         CmdLineParser parser = new CmdLineParser(this);
         try {
@@ -105,6 +104,7 @@ class Main {
         System.out.println("Starting patu web server");
         this.serverSocket = new ServerSocket(port);
         System.out.println("patu listening on " + port + "...");
+        System.out.println("docroot: " + docRoot);
     }
 
     public boolean isRunning() {
