@@ -1,20 +1,7 @@
 package com.tw.kiera.patu;
 
-import com.sun.xml.internal.bind.v2.TODO;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
 
 import static org.junit.Assert.*;
 
@@ -33,16 +20,24 @@ public class RequestHandlerTest {
     }
 
     @Test
-    public void shouldBeAbleToHandleARequestFromString() throws Exception {
-        String request = "GET / HTTP/1.1\n\n";
+    public void shouldRespondToRootWithContentsOfIndex() throws Exception {
+        String request = validGetRequest("/");
         Response response = requestHandler.handleRequest(request);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("<title>home</title>"));
     }
 
     @Test
+    public void shouldRespondWith400IfHostHeaderNotIncluded() throws Exception {
+        String requestWithoutHostHeader = "GET / HTTP/1.1\n\n";
+        Response response = requestHandler.handleRequest(requestWithoutHostHeader);
+        assertEquals(400, response.getStatusCode());
+        assertTrue(response.getBody().contains("Missing required header: Host"));
+    }
+
+    @Test
     public void shouldRespondWithFileRequested() throws Exception {
-        String request = "GET /link.html HTTP/1.1\n\n";
+        String request = validGetRequest("/link.html");
         Response response = requestHandler.handleRequest(request);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("<title>link</title>"));
@@ -50,7 +45,7 @@ public class RequestHandlerTest {
 
     @Test
     public void shouldRespondWith404IfResourceForFileDoesNotExist() throws Exception {
-        String request = getRequest("/nofile.html");
+        String request = validGetRequest("/nofile.html");
         Response response = requestHandler.handleRequest(request);
         assertEquals(404, response.getStatusCode());
     }
@@ -65,7 +60,7 @@ public class RequestHandlerTest {
 
     @Test
     public void shouldRespondWithResourceIfInSubfolder() throws Exception {
-        String request = getRequest("/subfolder/subfile.txt");
+        String request = validGetRequest("/subfolder/subfile.txt");
         Response response = requestHandler.handleRequest(request);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("hello"));
@@ -73,7 +68,7 @@ public class RequestHandlerTest {
 
     @Test
     public void shouldRespondWithResourceRequestedInParentFolder() throws Exception {
-        String request = getRequest("/subfolder/../link.html");
+        String request = validGetRequest("/subfolder/../link.html");
         Response response = requestHandler.handleRequest(request);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("<title>link</title>"));
@@ -81,12 +76,13 @@ public class RequestHandlerTest {
 
     @Test
     public void shouldRespondWith404IfResourceForFileOutsideOfDocFolder() throws Exception {
-        String request = getRequest("/../kiera-secret-file.txt");
+        String request = validGetRequest("/../kiera-secret-file.txt");
         Response response = requestHandler.handleRequest(request);
         assertEquals(404, response.getStatusCode());
     }
 
-    private String getRequest(String path) {
-        return String.format("GET %s HTTP/1.1\n\n", path);
+    private String validGetRequest(String path) {
+
+        return String.format("GET %s HTTP/1.1\nHost: example.com\n\n", path);
     }
 }

@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,10 +23,21 @@ public class RequestHandler {
         }
     }
 
-    public Response handleRequest(final String request) throws IOException {
-        String requestedFilePath = determineResourceRequested(request);
+    public Response handleRequest(String lines) throws IOException {
+        return handleRequest(Arrays.asList(lines.split("\n")));
+    }
+
+    public Response handleRequest(List<String> requestLines) throws IOException {
+        Map<String, String> headers = parseHeaders(requestLines);
+
+        ValidationResult result = validate(headers);
+        if (result.isInvalid()) {
+           return Response.badRequest(result.getErrorMessage());
+        }
+
+        String requestedFilePath = determineResourceRequested(requestLines.get(0));
         if (requestedFilePath == null) {
-            return Response.BAD_REQUEST;
+            return Response.badRequest("Malformed resource");
         }
         System.out.println(requestedFilePath);
         File requestedFile = new File(docRoot + "/" + requestedFilePath);
@@ -36,6 +48,33 @@ public class RequestHandler {
         Response response = new Response(200, "OK");
         response.setBody(respondWithResource(requestedFile));
         return response;
+    }
+
+    private ValidationResult validate(Map<String, String> headers) {
+        if (!headers.containsKey("Host")) {
+            return new ValidationResult(false, "Missing required header: Host");
+        }
+        return ValidationResult.VALID;
+    }
+
+    private Map<String, String> parseHeaders(List<String> lines) {
+        if (lines.size() < 2) {
+            return Collections.EMPTY_MAP;
+        }
+
+
+        Map<String, String> headers = new HashMap<String, String>();
+
+        for(int i=1; i<lines.size();i++) {
+            String line = lines.get(i);
+            if ("".equals(line)) {
+                break;
+            }
+            String[] nameAndValue = line.split(":");
+            headers.put(nameAndValue[0].trim(), nameAndValue[1].trim());
+        }
+
+        return Collections.unmodifiableMap(headers);
     }
 
     private boolean outsideOfDocRoot(File requestedFile) {

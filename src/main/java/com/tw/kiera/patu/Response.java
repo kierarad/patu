@@ -6,7 +6,6 @@ package com.tw.kiera.patu;
 public class Response {
 
     public static final Response NOT_FOUND = new Response(404, "Not Found");
-    public static final Response BAD_REQUEST = new Response(400, "Bad Request");
     private String statusLine;
 
     private int statusCode;
@@ -15,8 +14,17 @@ public class Response {
     public Response() {}
 
     public Response(int statusCode, String statusLine) {
+        this(statusCode, statusLine, null);
+    }
+
+    public Response(int statusCode, String statusLine, String body) {
         this.statusCode = statusCode;
         this.statusLine = statusLine;
+        this.body = body;
+    }
+
+    public static Response badRequest(String body) {
+        return new Response(400, "Bad Request", body);
     }
 
     public int getStatusCode() {
