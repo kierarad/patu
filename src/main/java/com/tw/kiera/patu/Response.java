@@ -1,9 +1,10 @@
 package com.tw.kiera.patu;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Collections2;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ThoughtWorker on 9/23/14.
@@ -15,7 +16,11 @@ public class Response {
 
     private int statusCode;
     private String body;
-    private String header = "Connection: close";
+
+    private Map <String, String> headers = new HashMap<String, String>();
+    {
+        headers.put("Connection", "close");
+    }
 
     public Response() {}
 
@@ -55,9 +60,26 @@ public class Response {
 
     public String toString() {
         List<String> lines = Arrays.asList(String.format("HTTP/1.1 %d %s", statusCode, statusLine),
-                                                          header,
+                                                          toHTTPHeaderString(),
                                                           "",
                                                           body);
         return Joiner.on("\r\n").join(lines);
+    }
+
+    public String toHTTPHeaderString() {
+        Collection<String> headerLines = Collections2.transform(headers.entrySet(), new Function<Map.Entry<String, String>, String>() {
+            public String apply(Map.Entry<String, String> nameAndValuePair) {
+                return nameAndValuePair.getKey() + ": " + nameAndValuePair.getValue();
+            }
+        });
+        return Joiner.on("\n").join(headerLines);
+    }
+
+    public void setHeader(String name, String value) {
+        headers.put(name, value);
+    }
+
+    public String getHeader(String name) {
+        return headers.get(name);
     }
 }
