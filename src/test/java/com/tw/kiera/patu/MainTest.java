@@ -1,7 +1,11 @@
 package com.tw.kiera.patu;
 
-import com.google.common.io.ByteSource;
-import org.junit.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -12,43 +16,21 @@ import java.net.*;
 
 public class MainTest {
 
-    public static final int DEFAULT_PORT = 8080;
-    private Main server;
-
     @Before
-    public void startServer() throws Exception {
-        server = new Main();
-        server.startAsync();
-        while(!server.isRunning()) {
-            Thread.sleep(100);
-        }
-    }
-
-    @After
-    public void shutdownServer() throws Exception {
-        this.server.stop();
+    public void startServer() throws InterruptedException {
+      Main server = new Main("-p", "8888", "-d", "src/test/data");
+      server.startAsync();
+      while(!server.isRunning()) {
+          Thread.sleep(100);
+      }
     }
 
     @Test
-    public void shouldListenOn8080() throws Exception {
-        assertTrue(canConnectTo(DEFAULT_PORT));
-    }
-
-    @Test
-    public void allowAllowPortToBeSpecifiedWithCmdLineArgs() throws InterruptedException {
-        server.stop();
-        server = new Main("-p", "7777");
-        server.startAsync();
-        while(!server.isRunning()) {
-            Thread.sleep(100);
-        }
-        assertEquals(7777, server.getPort());
-
-    }
-
-    private boolean canConnectTo(int port) throws Exception {
-        Socket s = new Socket(InetAddress.getLocalHost(), port);
-        return s.isConnected();
+    public void getRootShouldRespondWith200() throws IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet getRoot = new HttpGet("http://localhost:8888/");
+        CloseableHttpResponse response = client.execute(getRoot);
+        assertEquals(200, response.getStatusLine().getStatusCode());
     }
 
 

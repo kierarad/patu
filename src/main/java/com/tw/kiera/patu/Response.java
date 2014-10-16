@@ -40,6 +40,6 @@ public class Response {
     }
 
     public String toString() {
-        return String.format("HTTP/1.1 %d %s\n%s", statusCode, statusLine, body);
+        return String.format("HTTP/1.1 %d %s\r\n\r\n%s", statusCode, statusLine, body);
     }
 }

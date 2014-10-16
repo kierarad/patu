@@ -27,14 +27,14 @@ public class RequestHandler {
         if (requestedFilePath == null) {
             return Response.BAD_REQUEST;
         }
+        System.out.println(requestedFilePath);
         File requestedFile = new File(docRoot + "/" + requestedFilePath);
         if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
             return Response.NOT_FOUND;
         }
 
-        Response response = new Response();
+        Response response = new Response(200, "OK");
         response.setBody(respondWithResource(requestedFile));
-        response.setStatusCode(200);
         return response;
     }
 
@@ -55,9 +55,7 @@ public class RequestHandler {
         Pattern pattern = Pattern.compile("GET /([^\b]*) HTTP.*");
         Matcher matcher = pattern.matcher(clientMessage);
         if (matcher.matches()) {
-            System.out.println("match! " + matcher);
             String requestedFilePath = "index.html";
-            System.out.println(String.format("Match: '%s'", matcher.group(1)));
             if (!matcher.group(1).equals("")) {
                 requestedFilePath = matcher.group(1);
             }
