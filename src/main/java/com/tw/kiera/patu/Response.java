@@ -1,5 +1,10 @@
 package com.tw.kiera.patu;
 
+import com.google.common.base.Joiner;
+
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by ThoughtWorker on 9/23/14.
  */
@@ -10,6 +15,7 @@ public class Response {
 
     private int statusCode;
     private String body;
+    private String header = "Connection: close";
 
     public Response() {}
 
@@ -48,6 +54,10 @@ public class Response {
     }
 
     public String toString() {
-        return String.format("HTTP/1.1 %d %s\r\n\r\n%s", statusCode, statusLine, body);
+        List<String> lines = Arrays.asList(String.format("HTTP/1.1 %d %s", statusCode, statusLine),
+                                                          header,
+                                                          "",
+                                                          body);
+        return Joiner.on("\r\n").join(lines);
     }
 }
