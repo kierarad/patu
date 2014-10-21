@@ -39,6 +39,9 @@ public class RequestHandler {
         if (requestedFilePath == null) {
             return Response.badRequest("Malformed resource");
         }
+        if (requestedFilePath.equals("")) {
+            return Response.redirectTo("index.html");
+        }
         System.out.println(requestedFilePath);
         File requestedFile = new File(docRoot + "/" + requestedFilePath);
         if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
@@ -94,11 +97,7 @@ public class RequestHandler {
         Pattern pattern = Pattern.compile("GET /([^\b]*) HTTP.*");
         Matcher matcher = pattern.matcher(clientMessage);
         if (matcher.matches()) {
-            String requestedFilePath = "index.html";
-            if (!matcher.group(1).equals("")) {
-                requestedFilePath = matcher.group(1);
-            }
-            return requestedFilePath;
+            return matcher.group(1);
         }
         return null;
     }

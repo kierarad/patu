@@ -59,10 +59,12 @@ public class Response {
     }
 
     public String toString() {
-        List<String> lines = Arrays.asList(String.format("HTTP/1.1 %d %s", statusCode, statusLine),
+        List<String> lines = new ArrayList<String>(Arrays.asList(String.format("HTTP/1.1 %d %s", statusCode, statusLine),
                                                           toHTTPHeaderString(),
-                                                          "",
-                                                          body);
+                                                          ""));
+        if (body != null) {
+            lines.add(body);
+        }
         return Joiner.on("\r\n").join(lines);
     }
 
@@ -81,5 +83,11 @@ public class Response {
 
     public String getHeader(String name) {
         return headers.get(name);
+    }
+
+    public static Response redirectTo(String location) {
+        Response response = new Response(302, "Found");
+        response.setHeader("Location", location);
+        return response;
     }
 }
