@@ -11,7 +11,8 @@ import java.util.*;
  */
 public class Response {
 
-    public static final Response NOT_FOUND = new Response(404, "Not Found");
+    public static final Response NOT_FOUND = new Response(404, "Not Found", "<html><body><img src=\"https://c4.staticflickr.com/8/7172/6508022985_b22200ced0_b.jpg\"></body></html>");
+
     private String statusLine;
 
     private int statusCode;
