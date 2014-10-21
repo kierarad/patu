@@ -36,7 +36,7 @@ public class Response {
     }
 
     public static Response badRequest(String body) {
-        return new Response(400, "Bad Request", body);
+        return new Response(400, "Bad Request", "<html><body>" + body + "\n<img src='https://c4.staticflickr.com/8/7022/6540669737_7527a5de13_n.jpg'></body></html>");
     }
 
     public int getStatusCode() {

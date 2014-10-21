@@ -28,28 +28,34 @@ public class RequestHandler {
     }
 
     public Response handleRequest(List<String> requestLines) throws IOException {
-        Map<String, String> headers = parseHeaders(requestLines);
+        Response response;
+        try{
+            Map<String, String> headers = parseHeaders(requestLines);
 
-        ValidationResult result = validate(headers);
-        if (result.isInvalid()) {
-           return Response.badRequest(result.getErrorMessage());
-        }
+            ValidationResult result = validate(headers);
+            if (result.isInvalid()) {
+               return Response.badRequest(result.getErrorMessage());
+            }
 
-        String requestedFilePath = determineResourceRequested(requestLines.get(0));
-        if (requestedFilePath == null) {
-            return Response.badRequest("Malformed resource");
-        }
-        if (requestedFilePath.equals("")) {
-            return Response.redirectTo("index.html");
-        }
-        System.out.println(requestedFilePath);
-        File requestedFile = new File(docRoot + "/" + requestedFilePath);
-        if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
-            return Response.NOT_FOUND;
-        }
+            String requestedFilePath = determineResourceRequested(requestLines.get(0));
+            if (requestedFilePath == null) {
+                return Response.badRequest("Malformed resource");
+            }
+            if (requestedFilePath.equals("")) {
+                return Response.redirectTo("index.html");
+            }
+            System.out.println(requestedFilePath);
+            File requestedFile = new File(docRoot + "/" + requestedFilePath);
+            if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
+                return Response.NOT_FOUND;
+            }
 
-        Response response = new Response(200, "OK");
-        response.setBody(respondWithResource(requestedFile));
+            response = new Response(200, "OK");
+            response.setBody(respondWithResource(requestedFile));
+        } catch(Exception e) {
+          e.printStackTrace();
+          response = new Response(500, "Internal Server Error","<html><body><img src=\"https://c4.staticflickr.com/8/7001/6509400855_aaaf915871_n.jpg\"></body></html>");
+        }
         return response;
     }
 
