@@ -28,6 +28,7 @@ repositories {
 
 dependencies {
   compile 'args4j:args4j:2.0.29'
+  compile 'commons-lang:commons-lang:2.6'
   testCompile 'junit:junit:4.+'
   testCompile 'org.apache.httpcomponents:httpclient:4.3.5'
   compile 'com.google.guava:guava:18.0'
