@@ -20,11 +20,10 @@ public class RequestHandlerTest {
     }
 
     @Test
-    public void shouldRespondToRootWithContentsOfIndex() throws Exception {
+    public void shouldRedirectToIndexWhenRequestRoot() throws Exception {
         String request = validGetRequest("/");
         Response response = requestHandler.handleRequest(request);
-        assertEquals(200, response.getStatusCode());
-        assertTrue(response.getBody().contains("<title>home</title>"));
+        assertEquals(302, response.getStatusCode());
     }
 
     @Test

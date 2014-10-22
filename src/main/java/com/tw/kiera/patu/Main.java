@@ -74,7 +74,7 @@ class Main {
                 Socket client = null;
                 try {
                     client = serverSocket.accept();
-                    String request = readRequest(client);
+                    String request = readRequest(client.getInputStream());
                     Response response = new RequestHandler(docRoot).handleRequest(request);
                     OutputStream output = client.getOutputStream();
                     output.write(response.toString().getBytes());
@@ -93,13 +93,6 @@ class Main {
 		}
 	}
 
-    private String readRequest(Socket client) throws IOException {
-        InputStream input = client.getInputStream();
-        System.out.println("Input Stream received " + input);
-        return buildRequest(input);
-    }
-
-
     private void listenOnPort() throws IOException {
         System.out.println("Starting patu web server");
         this.serverSocket = new ServerSocket(port);
@@ -116,20 +109,7 @@ class Main {
         new Main(args).startAsync();
 	}
 
-    public void stop() {
-     this.mainThread.stop();
-        try {
-            this.serverSocket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public int getPort() {
-        return this.port;
-    }
-
-    static String buildRequest(InputStream input) throws IOException {
+    static String readRequest(InputStream input) throws IOException {
         LineIterator lineIterator = IOUtils.lineIterator(input, "UTF-8");
         List<String> lines = new ArrayList<String>();
 

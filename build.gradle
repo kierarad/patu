@@ -24,9 +24,7 @@ repositories {
   mavenCentral()
 }
 
-run {
-    args '-p', '8888'
-}
+
 
 dependencies {
   compile 'args4j:args4j:2.0.29'
