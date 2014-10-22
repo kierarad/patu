@@ -21,13 +21,6 @@ public class RequestParserTest {
     }
 
     @Test
-    public void shouldRedirectToIndexWhenRequestRoot() throws Exception {
-        String request = validGetRequest("/");
-        Response response = requestHandler.parseAndHandleRequest(request);
-        assertEquals(302, response.getStatusCode());
-    }
-
-    @Test
     public void shouldRespondWith400IfHostHeaderNotIncluded() throws Exception {
         String requestWithoutHostHeader = "GET / HTTP/1.1\n\n";
         Response response = requestHandler.parseAndHandleRequest(requestWithoutHostHeader);
@@ -36,49 +29,11 @@ public class RequestParserTest {
     }
 
     @Test
-    public void shouldRespondWithFileRequested() throws Exception {
-        String request = validGetRequest("/link.html");
-        Response response = requestHandler.parseAndHandleRequest(request);
-        assertEquals(200, response.getStatusCode());
-        assertTrue(response.getBody().contains("<title>link</title>"));
-    }
-
-    @Test
-    public void shouldRespondWith404IfResourceForFileDoesNotExist() throws Exception {
-        String request = validGetRequest("/nofile.html");
-        Response response = requestHandler.parseAndHandleRequest(request);
-        assertEquals(404, response.getStatusCode());
-    }
-
-    @Test
     public void shouldRespondToBadRequest() throws Exception {
         String request = "this-is-bad.txt";
         Response response = requestHandler.parseAndHandleRequest(request);
         assertEquals(400, response.getStatusCode());
         assertEquals("Bad Request", response.getStatusLine());
-    }
-
-    @Test
-    public void shouldRespondWithResourceIfInSubfolder() throws Exception {
-        String request = validGetRequest("/subfolder/subfile.txt");
-        Response response = requestHandler.parseAndHandleRequest(request);
-        assertEquals(200, response.getStatusCode());
-        assertTrue(response.getBody().contains("hello"));
-    }
-
-    @Test
-    public void shouldRespondWithResourceRequestedInParentFolder() throws Exception {
-        String request = validGetRequest("/subfolder/../link.html");
-        Response response = requestHandler.parseAndHandleRequest(request);
-        assertEquals(200, response.getStatusCode());
-        assertTrue(response.getBody().contains("<title>link</title>"));
-    }
-
-    @Test
-    public void shouldRespondWith404IfResourceForFileOutsideOfDocFolder() throws Exception {
-        String request = validGetRequest("/../kiera-secret-file.txt");
-        Response response = requestHandler.parseAndHandleRequest(request);
-        assertEquals(404, response.getStatusCode());
     }
 
     private String validGetRequest(String path) {

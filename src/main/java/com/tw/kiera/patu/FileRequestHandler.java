@@ -26,6 +26,10 @@ public class FileRequestHandler implements RequestHandler {
             return Response.NOT_FOUND;
         }
 
+        if (requestedFile.isDirectory()) {
+            return new DirectoryRequestHandler(requestedFile).handleRequest(request);
+        }
+
         try {
             return new Response(200, "OK", respondWithResource(requestedFile));
         } catch (IOException e) {
