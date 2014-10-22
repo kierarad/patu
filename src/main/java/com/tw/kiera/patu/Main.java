@@ -14,7 +14,6 @@ import java.lang.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.*;
 
 class Main {
 
@@ -49,6 +48,7 @@ class Main {
         CmdLineParser parser = new CmdLineParser(this);
         try {
             parser.parseArgument(args);
+            Settings.getInstance().setDocRoot(docRoot);
         } catch (CmdLineException e) {
             parser.printUsage(System.err);
             throw new RuntimeException(e);
@@ -70,14 +70,14 @@ class Main {
 
 			isRunning = true;
 			while(true) {
-				System.out.println("Listening again for a client");
                 Socket client = null;
                 try {
                     client = serverSocket.accept();
                     String request = readRequest(client.getInputStream());
-                    Response response = new RequestHandler(docRoot).handleRequest(request);
+                    Response response = new RequestParser().parseAndHandleRequest(request);
                     OutputStream output = client.getOutputStream();
                     output.write(response.toString().getBytes());
+                    System.out.println(String.format("[HTTP %d %s] - %s", response.getStatusCode(), response.getStatusLine(), client.getRemoteSocketAddress()));
                 } catch (Exception e) {
                     System.out.println(String.format("error handling %s: %s", client.getRemoteSocketAddress(), e.getMessage()));
                 } finally {
