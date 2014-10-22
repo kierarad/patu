@@ -29,9 +29,15 @@ public class RequestHandler {
 
     public Response handleRequest(List<String> requestLines) throws IOException {
         Response response;
-        try{
-            Map<String, String> headers = parseHeaders(requestLines);
+        Map<String, String> headers = parseHeaders(requestLines);
 
+        if (!headers.containsKey("Authorization")){
+            response = new Response(401, "Not Authorized");
+            response.setHeader("WWW-Authenticate", "Basic realm='patu'");
+            return response;
+        }
+
+        try {
             ValidationResult result = validate(headers);
             if (result.isInvalid()) {
                return Response.badRequest(result.getErrorMessage());
