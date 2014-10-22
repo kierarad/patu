@@ -6,12 +6,16 @@ import com.google.common.collect.Collections2;
 
 import java.util.*;
 
-/**
- * Created by ThoughtWorker on 9/23/14.
- */
 public class Response {
 
-    public static final Response NOT_FOUND = new Response(404, "Not Found", "<html><body><img src=\"https://c4.staticflickr.com/8/7172/6508022985_b22200ced0_b.jpg\"></body></html>");
+    public static final Response NOT_FOUND;
+    static {
+        String html = new HtmlBuilder().
+                            withTitle("Not Found").
+                            withBody("<img src=\"https://c4.staticflickr.com/8/7172/6508022985_b22200ced0_b.jpg\">").
+                                build();
+        NOT_FOUND = new Response(404, "Not Found", html);
+    }
 
     private String statusLine;
 
@@ -36,7 +40,11 @@ public class Response {
     }
 
     public static Response badRequest(String body) {
-        return new Response(400, "Bad Request", "<html><body>" + body + "\n<img src='https://c4.staticflickr.com/8/7022/6540669737_7527a5de13_n.jpg'></body></html>");
+        String html = new HtmlBuilder().
+                withBody("Bad Request").
+                withBody("<p>" + body + "</p><p><img src=\"https://c4.staticflickr.com/8/7022/6540669737_7527a5de13_n.jpg\"></p>").
+                build();
+        return new Response(400, "Bad Request", html);
     }
 
     public int getStatusCode() {

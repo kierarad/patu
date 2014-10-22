@@ -1,5 +1,7 @@
 package com.tw.kiera.patu;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.File;
 
 
@@ -12,6 +14,10 @@ public class Settings {
 
     public static Settings getInstance() {
         return INSTANCE;
+    }
+
+    public String getSignature() {
+        return String.format("<strong><a href='%s'>Patu</a> %s</strong> [%s - java %s]", "https://github.com/kierarad/patu", getVersion(), System.getProperty("os.name"), Runtime.class.getPackage().getImplementationVersion());
     }
 
     public File getDocRoot() {
@@ -27,5 +33,13 @@ public class Settings {
 
     public void setDocRoot(String docRoot) {
         setDocRoot(new File(docRoot));
+    }
+
+    public String getVersion() {
+        String version = getClass().getPackage().getImplementationVersion();
+        if (StringUtils.isBlank(version)) {
+            version = "(unreleased version)";
+        }
+        return version;
     }
 }

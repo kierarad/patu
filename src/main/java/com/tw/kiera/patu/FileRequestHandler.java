@@ -27,7 +27,7 @@ public class FileRequestHandler implements RequestHandler {
         }
 
         if (requestedFile.isDirectory()) {
-            return new DirectoryRequestHandler(requestedFile).handleRequest(request);
+            return new DirectoryRequestHandler().handleRequest(request);
         }
 
         try {

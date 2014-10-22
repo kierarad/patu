@@ -14,9 +14,10 @@ project.ext {
 version = String.format("%d.%d.%d-%s", project.majorVersion, project.minorVersion, project.patchVersion, project.timestamp)
 
 mainClassName = "com.tw.kiera.patu.Main"
+
 jar {
   manifest {
-    attributes 'Implementation-Title': 'patu', 'Implementation-Version': version
+    attributes 'Implementation-Title': 'patu', 'Implementation-Version': version, 'Main-Class' : mainClassName
   }
 }
 

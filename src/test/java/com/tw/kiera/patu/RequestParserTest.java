@@ -10,13 +10,12 @@ import static org.junit.Assert.*;
  */
 public class RequestParserTest {
 
-    private final static String TEST_DOCROOT = "./src/test/data";
     private Main server;
     private RequestParser requestHandler;
 
     @Before
     public void createRequestHandler() throws Exception {
-        Settings.getInstance().setDocRoot(TEST_DOCROOT);
+        Settings.getInstance().setDocRoot(TestSettings.TEST_DOCROOT);
         this.requestHandler = new RequestParser();
     }
 

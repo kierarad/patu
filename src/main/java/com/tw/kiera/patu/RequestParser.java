@@ -42,7 +42,8 @@ public class RequestParser {
 
         } catch(Exception e) {
           e.printStackTrace();
-          return new Response(500, "Internal Server Error","<html><body><img src=\"https://c4.staticflickr.com/8/7001/6509400855_aaaf915871_n.jpg\"></body></html>");
+          String html = new HtmlBuilder().withTitle("Internal Server Error").withBody("<img src=\"https://c4.staticflickr.com/8/7001/6509400855_aaaf915871_n.jpg\">").build();
+          return new Response(500, "Internal Server Error", html);
         }
 
     }

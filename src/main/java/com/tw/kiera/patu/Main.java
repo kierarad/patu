@@ -44,7 +44,6 @@ class Main {
     }
 
     public Main(String... args) {
-        System.out.println(Arrays.asList(args));
         CmdLineParser parser = new CmdLineParser(this);
         try {
             parser.parseArgument(args);

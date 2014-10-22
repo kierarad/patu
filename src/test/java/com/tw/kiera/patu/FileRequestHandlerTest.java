@@ -14,24 +14,22 @@ public class FileRequestHandlerTest {
 
     private FileRequestHandler requestHandler;
 
-    private final static String TEST_DOCROOT = "./src/test/data";
-
     @Before
     public void createHandler() {
-        Settings.getInstance().setDocRoot(TEST_DOCROOT);
+        Settings.getInstance().setDocRoot(TestSettings.TEST_DOCROOT);
        requestHandler = new FileRequestHandler();
     }
 
     @Test
     public void shouldRedirectToIndexWhenRequestRoot() throws Exception {
-        Request req = new Request(validHeaders(), "");
+        Request req = new TestRequest("");
         Response response = requestHandler.handleRequest(req);
         assertEquals(302, response.getStatusCode());
     }
 
     @Test
     public void shouldRespondWithFileRequested() throws Exception {
-        Request req = new Request(validHeaders(), "link.html");
+        Request req = new TestRequest("link.html");
         Response response = requestHandler.handleRequest(req);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("<title>link</title>"));
@@ -39,14 +37,14 @@ public class FileRequestHandlerTest {
 
     @Test
     public void shouldRespondWith404IfResourceForFileDoesNotExist() throws Exception {
-        Request req = new Request(validHeaders(), "nonexistent.html");
+        Request req = new TestRequest("nonexistent.html");
         Response response = requestHandler.handleRequest(req);
         assertEquals(404, response.getStatusCode());
     }
 
     @Test
     public void shouldRespondWithResourceIfInSubfolder() throws Exception {
-        Request req = new Request(validHeaders(), "subfolder/subfile.txt");
+        Request req = new TestRequest("subfolder/subfile.txt");
         Response response = requestHandler.handleRequest(req);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("hello"));
@@ -54,7 +52,7 @@ public class FileRequestHandlerTest {
 
     @Test
     public void shouldRespondWithResourceRequestedInParentFolder() throws Exception {
-        Request req = new Request(validHeaders(), "subfolder/../link.html");
+        Request req = new TestRequest("subfolder/../link.html");
         Response response = requestHandler.handleRequest(req);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("<title>link</title>"));
@@ -62,14 +60,10 @@ public class FileRequestHandlerTest {
 
     @Test
     public void shouldRespondWith404IfResourceForFileOutsideOfDocFolder() throws Exception {
-        Request req = new Request(validHeaders(), "../kiera-secret-file.txt");
+        Request req = new TestRequest("../kiera-secret-file.txt");
         Response response = requestHandler.handleRequest(req);
         assertEquals(404, response.getStatusCode());
         assertFalse(response.getBody().contains("PASSWORDS"));
     }
 
-
-    private Map<String, String> validHeaders() {
-        return Collections.singletonMap("Host", "localhost");
-    }
 }
