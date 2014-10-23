@@ -26,6 +26,9 @@ class Main {
     @Option(name="-p",usage="port to listen on")
     private int port = DEFAULT_PORT;
 
+    @Option(name="--dir-browsing", usage="enable directory browsing")
+    private boolean directoryBrowsingEnabled = false;
+
     private boolean isRunning;
     private Thread mainThread;
     private ServerSocket serverSocket;
@@ -48,6 +51,7 @@ class Main {
         try {
             parser.parseArgument(args);
             Settings.getInstance().setDocRoot(docRoot);
+            Settings.getInstance().setDirectoryBrowsingEnabled(directoryBrowsingEnabled);
         } catch (CmdLineException e) {
             parser.printUsage(System.err);
             throw new RuntimeException(e);

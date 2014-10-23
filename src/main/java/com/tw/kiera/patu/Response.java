@@ -96,7 +96,8 @@ public class Response {
 
     public static Response redirectTo(String location) {
         Response response = new Response(302, "Found");
-        response.setHeader("Location", location);
+        String uri = "http://" + Settings.getInstance().getHostname() + location;
+        response.setHeader("Location", uri);
         return response;
     }
 }

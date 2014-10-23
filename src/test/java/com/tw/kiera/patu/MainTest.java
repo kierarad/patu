@@ -28,7 +28,7 @@ public class MainTest {
     @Test
     public void getRootShouldRespondWith200() throws IOException {
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet getRoot = new HttpGet("http://localhost:8888/");
+        HttpGet getRoot = new HttpGet("http://localhost:8888/index.html");
         CloseableHttpResponse response = client.execute(getRoot);
         assertEquals(200, response.getStatusLine().getStatusCode());
     }

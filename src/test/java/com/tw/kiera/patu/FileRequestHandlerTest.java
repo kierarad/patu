@@ -16,7 +16,7 @@ public class FileRequestHandlerTest {
 
     @Before
     public void createHandler() {
-        Settings.getInstance().setDocRoot(TestSettings.TEST_DOCROOT);
+       TestSettings.init();
        requestHandler = new FileRequestHandler();
     }
 

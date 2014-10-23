@@ -11,6 +11,8 @@ public class Settings {
 
 
     private static final Settings INSTANCE = new Settings();
+    private boolean directoryBrowsingEnabled;
+    private String hostname;
 
     public static Settings getInstance() {
         return INSTANCE;
@@ -41,5 +43,21 @@ public class Settings {
             version = "(unreleased version)";
         }
         return version;
+    }
+
+    public boolean isDirectoryBrowsingEnabled() {
+        return directoryBrowsingEnabled;
+    }
+
+    public void setDirectoryBrowsingEnabled(boolean directoryBrowsingEnabled) {
+        this.directoryBrowsingEnabled = directoryBrowsingEnabled;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public String getHostname() {
+        return hostname;
     }
 }
