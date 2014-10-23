@@ -14,9 +14,10 @@ project.ext {
 version = String.format("%d.%d.%d-%s", project.majorVersion, project.minorVersion, project.patchVersion, project.timestamp)
 
 mainClassName = "com.tw.kiera.patu.Main"
+
 jar {
   manifest {
-    attributes 'Implementation-Title': 'patu', 'Implementation-Version': version
+    attributes 'Implementation-Title': 'patu', 'Implementation-Version': version, 'Main-Class' : mainClassName
   }
 }
 
@@ -24,13 +25,18 @@ repositories {
   mavenCentral()
 }
 
+run {
+    args '--dir-browsing'
+}
 
 
 dependencies {
   compile 'args4j:args4j:2.0.29'
   compile 'commons-lang:commons-lang:2.6'
-  testCompile 'junit:junit:4.+'
-  testCompile 'org.apache.httpcomponents:httpclient:4.3.5'
+  compile 'commons-codec:commons-codec:1.9'
   compile 'com.google.guava:guava:18.0'
   compile 'org.apache.commons:commons-io:1.3.2'
+
+  testCompile 'junit:junit:4.+'
+  testCompile 'org.apache.httpcomponents:httpclient:4.3.5'
 }

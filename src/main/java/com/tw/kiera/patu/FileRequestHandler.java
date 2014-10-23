@@ -17,13 +17,13 @@ public class FileRequestHandler implements RequestHandler {
 
     @Override
     public Response handleRequest(Request request) {
-
-        if (StringUtils.isEmpty(request.getPath())) {
-            return Response.redirectTo("index.html");
-        }
         File requestedFile = new File(docRoot, request.getPath());
         if (!requestedFile.exists() || outsideOfDocRoot(requestedFile)) {
             return Response.NOT_FOUND;
+        }
+
+        if (requestedFile.isDirectory()) {
+            return new DirectoryRequestHandler().handleRequest(request);
         }
 
         try {

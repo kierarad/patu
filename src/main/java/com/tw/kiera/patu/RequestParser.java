@@ -1,5 +1,7 @@
 package com.tw.kiera.patu;
 
+import com.google.common.net.UrlEscapers;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -33,16 +35,20 @@ public class RequestParser {
             }
 
             String requestedFilePath = determineResourceRequested(requestLines.get(0));
+            requestedFilePath = Settings.getInstance().getUrlDecoder().decode(requestedFilePath);
+
             if (requestedFilePath == null) {
                 return Response.badRequest("Malformed resource");
             }
 
             Request request = new Request(headers, requestedFilePath);
+            System.out.println("GET " + request.getPath());
             return new FileRequestHandler().handleRequest(request);
 
         } catch(Exception e) {
           e.printStackTrace();
-          return new Response(500, "Internal Server Error","<html><body><img src=\"https://c4.staticflickr.com/8/7001/6509400855_aaaf915871_n.jpg\"></body></html>");
+          String html = new HtmlBuilder().withTitle("Internal Server Error").withBody("<img src=\"https://c4.staticflickr.com/8/7001/6509400855_aaaf915871_n.jpg\">").build();
+          return new Response(500, "Internal Server Error", html);
         }
 
     }
@@ -79,7 +85,7 @@ public class RequestParser {
 
     private String determineResourceRequested(String request) throws IOException {
         String clientMessage = parseRequest(request);
-        Pattern pattern = Pattern.compile("GET /([^\b]*) HTTP.*");
+        Pattern pattern = Pattern.compile("GET (/[^\b]*) HTTP.*");
         Matcher matcher = pattern.matcher(clientMessage);
         if (matcher.matches()) {
             return matcher.group(1);

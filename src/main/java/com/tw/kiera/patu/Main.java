@@ -26,6 +26,12 @@ class Main {
     @Option(name="-p",usage="port to listen on")
     private int port = DEFAULT_PORT;
 
+    @Option(name="--dir-browsing", usage="enable directory browsing")
+    private boolean directoryBrowsingEnabled = false;
+
+    @Option(name="-h", usage="external hostname")
+    private String hostname = System.getenv("HOSTNAME");
+
     private boolean isRunning;
     private Thread mainThread;
     private ServerSocket serverSocket;
@@ -44,11 +50,12 @@ class Main {
     }
 
     public Main(String... args) {
-        System.out.println(Arrays.asList(args));
         CmdLineParser parser = new CmdLineParser(this);
         try {
             parser.parseArgument(args);
             Settings.getInstance().setDocRoot(docRoot);
+            Settings.getInstance().setDirectoryBrowsingEnabled(directoryBrowsingEnabled);
+            Settings.getInstance().setHostname(hostname);
         } catch (CmdLineException e) {
             parser.printUsage(System.err);
             throw new RuntimeException(e);
