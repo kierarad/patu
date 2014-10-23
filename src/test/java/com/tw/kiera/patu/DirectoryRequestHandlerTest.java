@@ -24,7 +24,7 @@ public class DirectoryRequestHandlerTest {
         Request req = new TestRequest("/subfolder-with-index");
         Response res = new DirectoryRequestHandler().handleRequest(req);
         assertThat(res.getStatusCode(), equalTo(302));
-        assertThat(res.getHeader("Location"), equalTo("http://test.host/subfolder-with-index/index.html"));
+        assertThat(res.getHeader("Location"), equalTo("http://test.host:8080/subfolder-with-index/index.html"));
     }
 
 

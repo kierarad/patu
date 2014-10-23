@@ -1,5 +1,6 @@
 package com.tw.kiera.patu;
 
+import com.google.common.base.Preconditions;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
 import org.apache.commons.codec.net.URLCodec;
@@ -16,6 +17,7 @@ public class Settings {
     private boolean directoryBrowsingEnabled;
     private String hostname;
     private final URLCodec urlCodec = new URLCodec();
+    private int port;
 
     public static Settings getInstance() {
         return INSTANCE;
@@ -65,10 +67,19 @@ public class Settings {
     }
 
     public void setHostname(String hostname) {
+        Preconditions.checkNotNull(hostname);
         this.hostname = hostname;
     }
 
     public String getHostname() {
         return hostname;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

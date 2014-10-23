@@ -7,5 +7,6 @@ public class TestSettings {
         Settings.getInstance().setDocRoot(TEST_DOCROOT);
         Settings.getInstance().setDirectoryBrowsingEnabled(false);
         Settings.getInstance().setHostname("test.host");
+        Settings.getInstance().setPort(8080);
     }
 }

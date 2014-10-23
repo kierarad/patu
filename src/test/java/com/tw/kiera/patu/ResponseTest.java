@@ -27,7 +27,7 @@ public class ResponseTest {
     @Test
     public void redirectShouldHaveFullLocationHeader() {
         Response res = Response.redirectTo("/somepath");
-        assertThat(res.getHeader("Location"), equalTo("http://test.host/somepath"));
+        assertThat(res.getHeader("Location"), equalTo("http://test.host:8080/somepath"));
     }
 
     @Test

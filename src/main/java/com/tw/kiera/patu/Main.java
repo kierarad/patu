@@ -2,6 +2,8 @@ package com.tw.kiera.patu;
 
 
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.kohsuke.args4j.CmdLineException;
@@ -30,7 +32,7 @@ class Main {
     private boolean directoryBrowsingEnabled = false;
 
     @Option(name="-h", usage="external hostname")
-    private String hostname = System.getenv("HOSTNAME");
+    private String hostname = MoreObjects.firstNonNull(System.getenv("HOSTNAME"), "localhost");
 
     private boolean isRunning;
     private Thread mainThread;
@@ -56,6 +58,7 @@ class Main {
             Settings.getInstance().setDocRoot(docRoot);
             Settings.getInstance().setDirectoryBrowsingEnabled(directoryBrowsingEnabled);
             Settings.getInstance().setHostname(hostname);
+            Settings.getInstance().setPort(port);
         } catch (CmdLineException e) {
             parser.printUsage(System.err);
             throw new RuntimeException(e);
@@ -112,6 +115,9 @@ class Main {
 	}
 
 	public static void main (String... args) throws java.lang.Exception {
+        System.out.println("ENV variables");
+        System.out.println(System.getenv("HOSTNAME"));
+        System.out.println(System.getenv());
         System.out.println("Main received: " + Arrays.asList(args));
         new Main(args).startAsync();
 	}
