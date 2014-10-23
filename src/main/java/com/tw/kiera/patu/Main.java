@@ -29,6 +29,9 @@ class Main {
     @Option(name="--dir-browsing", usage="enable directory browsing")
     private boolean directoryBrowsingEnabled = false;
 
+    @Option(name="-h", usage="external hostname")
+    private String hostname = System.getenv("HOSTNAME");
+
     private boolean isRunning;
     private Thread mainThread;
     private ServerSocket serverSocket;
@@ -52,6 +55,7 @@ class Main {
             parser.parseArgument(args);
             Settings.getInstance().setDocRoot(docRoot);
             Settings.getInstance().setDirectoryBrowsingEnabled(directoryBrowsingEnabled);
+            Settings.getInstance().setHostname(hostname);
         } catch (CmdLineException e) {
             parser.printUsage(System.err);
             throw new RuntimeException(e);

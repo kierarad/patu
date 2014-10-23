@@ -12,10 +12,10 @@ public class DirectoryRequestHandler implements RequestHandler {
             return new DirectoryListingResponse(request.getPath());
         }
 
-        String pathToIndex = request.getPath() + "/index.html";
+        File pathToIndex = new File(request.getPath(), "/index.html");
         File indexFile = new File(Settings.getInstance().getDocRoot(), "/" + pathToIndex);
         if (indexFile.exists()) {
-            return Response.redirectTo("/" + pathToIndex);
+            return Response.redirectTo(pathToIndex.getPath());
         }
 
         return Response.NOT_FOUND;

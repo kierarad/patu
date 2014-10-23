@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
+import java.util.List;
 
 public class HtmlBuilder {
 
@@ -24,6 +26,22 @@ public class HtmlBuilder {
     public HtmlBuilder withBody(String body) {
         this.body = body;
         return this;
+    }
+
+    public static String a(String href, String text) {
+        return String.format("<a href=\"%s\">%s</a>", href, text);
+    }
+
+    public static String toUnorderedList(Collection<String> items) {
+        StringBuilder sb = new StringBuilder();
+
+        for(String item : items) {
+            sb.append("<ul>");
+            sb.append(item);
+            sb.append("</ul>\n");
+        }
+
+        return sb.toString();
     }
 
     public String build() {

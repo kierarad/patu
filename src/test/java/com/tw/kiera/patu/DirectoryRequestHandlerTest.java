@@ -14,14 +14,14 @@ public class DirectoryRequestHandlerTest {
 
     @Test
     public void byDefaultReturn404WhenNoIndexFilePresent() {
-        Request req = new TestRequest("subfolder");
+        Request req = new TestRequest("/subfolder");
         Response res = new DirectoryRequestHandler().handleRequest(req);
         assertThat(res.getStatusCode(), equalTo(404));
     }
 
     @Test
     public void byDefaultReturn302WhenIndexFilePresent() {
-        Request req = new TestRequest("subfolder-with-index");
+        Request req = new TestRequest("/subfolder-with-index");
         Response res = new DirectoryRequestHandler().handleRequest(req);
         assertThat(res.getStatusCode(), equalTo(302));
         assertThat(res.getHeader("Location"), equalTo("http://test.host/subfolder-with-index/index.html"));
@@ -31,7 +31,7 @@ public class DirectoryRequestHandlerTest {
     @Test
     public void whenDirBrowsingEnabledShouldIncludeContentsOfDirectoryInBody() {
        Settings.getInstance().setDirectoryBrowsingEnabled(true);
-       Request req = new TestRequest("subfolder");
+       Request req = new TestRequest("/subfolder");
        Response res = new DirectoryRequestHandler().handleRequest(req);
        assertThat(res.getBody(), containsString("subfile.txt"));
     }

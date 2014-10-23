@@ -29,7 +29,7 @@ public class FileRequestHandlerTest {
 
     @Test
     public void shouldRespondWithFileRequested() throws Exception {
-        Request req = new TestRequest("link.html");
+        Request req = new TestRequest("/link.html");
         Response response = requestHandler.handleRequest(req);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("<title>link</title>"));
@@ -37,14 +37,14 @@ public class FileRequestHandlerTest {
 
     @Test
     public void shouldRespondWith404IfResourceForFileDoesNotExist() throws Exception {
-        Request req = new TestRequest("nonexistent.html");
+        Request req = new TestRequest("/nonexistent.html");
         Response response = requestHandler.handleRequest(req);
         assertEquals(404, response.getStatusCode());
     }
 
     @Test
     public void shouldRespondWithResourceIfInSubfolder() throws Exception {
-        Request req = new TestRequest("subfolder/subfile.txt");
+        Request req = new TestRequest("/subfolder/subfile.txt");
         Response response = requestHandler.handleRequest(req);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("hello"));
@@ -52,7 +52,7 @@ public class FileRequestHandlerTest {
 
     @Test
     public void shouldRespondWithResourceRequestedInParentFolder() throws Exception {
-        Request req = new TestRequest("subfolder/../link.html");
+        Request req = new TestRequest("/subfolder/../link.html");
         Response response = requestHandler.handleRequest(req);
         assertEquals(200, response.getStatusCode());
         assertTrue(response.getBody().contains("<title>link</title>"));
@@ -60,7 +60,7 @@ public class FileRequestHandlerTest {
 
     @Test
     public void shouldRespondWith404IfResourceForFileOutsideOfDocFolder() throws Exception {
-        Request req = new TestRequest("../kiera-secret-file.txt");
+        Request req = new TestRequest("/../kiera-secret-file.txt");
         Response response = requestHandler.handleRequest(req);
         assertEquals(404, response.getStatusCode());
         assertFalse(response.getBody().contains("PASSWORDS"));

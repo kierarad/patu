@@ -80,7 +80,7 @@ public class RequestParser {
 
     private String determineResourceRequested(String request) throws IOException {
         String clientMessage = parseRequest(request);
-        Pattern pattern = Pattern.compile("GET /([^\b]*) HTTP.*");
+        Pattern pattern = Pattern.compile("GET (/[^\b]*) HTTP.*");
         Matcher matcher = pattern.matcher(clientMessage);
         if (matcher.matches()) {
             return matcher.group(1);
