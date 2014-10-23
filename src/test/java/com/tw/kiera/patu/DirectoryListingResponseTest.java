@@ -19,15 +19,27 @@ public class DirectoryListingResponseTest{
     }
 
     @Test
-    public void shouldIncludeLinksRelativeToDocroot() {
+    public void shouldIncludeLinksRelativeToDocRoot() {
         Response response = new DirectoryListingResponse("/subfolder/subsubfolder");
         assertThat(response.getBody(), containsString("href=\"/subfolder/subsubfolder/subsubfile.html\""));
     }
 
     @Test
-    public void shouldProperlyListDocroot() {
+    public void shouldProperlyListDocRoot() {
         Response response = new DirectoryListingResponse("/");
         assertThat(response.getBody(), containsString("<a href=\"/subfolder\">subfolder</a>"));
+    }
+
+    @Test
+    public void listingSubfolderShouldContainParentLink() {
+        Response response = new DirectoryListingResponse("/subfolder");
+        assertThat(response.getBody(), containsString("<a href=\"/\">[..]</a>"));
+    }
+
+    @Test
+    public void listingDocrootShouldNotContainParentLink() {
+        Response response = new DirectoryListingResponse("/");
+        assertThat(response.getBody(), not(containsString("..")));
     }
 
     @Test
