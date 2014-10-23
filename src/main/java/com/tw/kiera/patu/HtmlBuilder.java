@@ -35,12 +35,13 @@ public class HtmlBuilder {
     public static String toUnorderedList(Collection<String> items) {
         StringBuilder sb = new StringBuilder();
 
+        sb.append("<ul>");
         for(String item : items) {
-            sb.append("<ul>");
+            sb.append("\t<li>");
             sb.append(item);
-            sb.append("</ul>\n");
+            sb.append("</li>\n");
         }
-
+        sb.append("</ul>");
         return sb.toString();
     }
 

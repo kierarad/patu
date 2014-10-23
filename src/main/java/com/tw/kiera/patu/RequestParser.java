@@ -1,5 +1,7 @@
 package com.tw.kiera.patu;
 
+import com.google.common.net.UrlEscapers;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -33,11 +35,14 @@ public class RequestParser {
             }
 
             String requestedFilePath = determineResourceRequested(requestLines.get(0));
+            requestedFilePath = Settings.getInstance().getUrlDecoder().decode(requestedFilePath);
+
             if (requestedFilePath == null) {
                 return Response.badRequest("Malformed resource");
             }
 
             Request request = new Request(headers, requestedFilePath);
+            System.out.println("GET " + request.getPath());
             return new FileRequestHandler().handleRequest(request);
 
         } catch(Exception e) {

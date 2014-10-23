@@ -3,11 +3,11 @@ package com.tw.kiera.patu;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.io.IOException;
 
-/**
- * Created by ThoughtWorker on 8/26/14.
- */
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+
 public class RequestParserTest {
 
     private Main server;
@@ -17,6 +17,13 @@ public class RequestParserTest {
     public void createRequestHandler() throws Exception {
         Settings.getInstance().setDocRoot(TestSettings.TEST_DOCROOT);
         this.requestHandler = new RequestParser();
+    }
+
+    @Test
+    public void shouldProperlyHandleUrlEscapedPaths() throws IOException {
+        String request = validGetRequest("/file+with+spaces.html");
+        Response response = requestHandler.parseAndHandleRequest(request);
+        assertThat(response.getStatusCode(), equalTo(200));
     }
 
     @Test

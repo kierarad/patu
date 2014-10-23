@@ -71,8 +71,8 @@ public class Response {
         List<String> lines = new ArrayList<String>(Arrays.asList(String.format("HTTP/1.1 %d %s", statusCode, statusLine),
                                                           toHTTPHeaderString(),
                                                           ""));
-        if (body != null) {
-            lines.add(body);
+        if (getBody() != null) {
+            lines.add(getBody());
         }
         return Joiner.on("\r\n").join(lines);
     }

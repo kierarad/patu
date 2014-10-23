@@ -9,6 +9,7 @@ public class DirectoryRequestHandler implements RequestHandler {
     @Override
     public Response handleRequest(Request request) {
         if (Settings.getInstance().isDirectoryBrowsingEnabled()) {
+            System.out.println("Generating directory listing for " + request.getPath());
             return new DirectoryListingResponse(request.getPath());
         }
 

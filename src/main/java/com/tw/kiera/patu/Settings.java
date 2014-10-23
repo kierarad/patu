@@ -1,5 +1,8 @@
 package com.tw.kiera.patu;
 
+import com.google.common.escape.Escaper;
+import com.google.common.net.UrlEscapers;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -9,10 +12,10 @@ public class Settings {
 
     private File docRoot;
 
-
     private static final Settings INSTANCE = new Settings();
     private boolean directoryBrowsingEnabled;
     private String hostname;
+    private final URLCodec urlCodec = new URLCodec();
 
     public static Settings getInstance() {
         return INSTANCE;
@@ -51,6 +54,14 @@ public class Settings {
 
     public void setDirectoryBrowsingEnabled(boolean directoryBrowsingEnabled) {
         this.directoryBrowsingEnabled = directoryBrowsingEnabled;
+    }
+
+    public URLCodec getUrlEncoder() {
+        return urlCodec;
+    }
+
+    public URLCodec getUrlDecoder() {
+        return urlCodec;
     }
 
     public void setHostname(String hostname) {
