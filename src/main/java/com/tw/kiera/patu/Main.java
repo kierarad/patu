@@ -115,9 +115,6 @@ class Main {
 	}
 
 	public static void main (String... args) throws java.lang.Exception {
-        System.out.println("ENV variables");
-        System.out.println(System.getenv("HOSTNAME"));
-        System.out.println(System.getenv());
         System.out.println("Main received: " + Arrays.asList(args));
         new Main(args).startAsync();
 	}
