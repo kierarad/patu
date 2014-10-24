@@ -15,7 +15,7 @@ public class RequestParserTest {
 
     @Before
     public void createRequestHandler() throws Exception {
-        Settings.getInstance().setDocRoot(TestSettings.TEST_DOCROOT);
+        TestSettings.init();
         this.requestHandler = new RequestParser();
     }
 
@@ -42,8 +42,16 @@ public class RequestParserTest {
         assertEquals("Bad Request", response.getStatusLine());
     }
 
-    private String validGetRequest(String path) {
+    @Test
+    public void shouldPromptUserForAuthCredentials() throws Exception {
+        Settings.getInstance().setBasicAuthOn(true);
+        String requestWithoutAuth = "GET / HTTP/1.1\nHost: example.com\n\n";
+        Response response = requestHandler.parseAndHandleRequest(requestWithoutAuth);
+        assertEquals(401, response.getStatusCode());
+        assertEquals("Basic realm='patu'", response.getHeader("WWW-Authenticate"));
+    }
 
+    private String validGetRequest(String path) {
         return String.format("GET %s HTTP/1.1\nHost: example.com\n\n", path);
     }
 }
