@@ -71,10 +71,12 @@ public class Response {
         List<String> lines = new ArrayList<String>(Arrays.asList(String.format("HTTP/1.1 %d %s", statusCode, statusLine),
                                                           toHTTPHeaderString(),
                                                           ""));
+
+        String beforeBody = Joiner.on("\r\n").join(lines);
         if (getBody() != null) {
-            lines.add(getBody());
+            return beforeBody + "\r\n" + getBody();
         }
-        return Joiner.on("\r\n").join(lines);
+        return beforeBody;
     }
 
     public String toHTTPHeaderString() {
