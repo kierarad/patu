@@ -1,14 +1,15 @@
 package com.tw.kiera.patu;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 public class FileRequestHandlerTest {
 
@@ -18,6 +19,13 @@ public class FileRequestHandlerTest {
     public void createHandler() {
        TestSettings.init();
        requestHandler = new FileRequestHandler();
+    }
+
+    @Test
+    public void shouldDeliverBinaryFilesWithProperEncoding() throws UnsupportedEncodingException {
+        Request req = new TestRequest("/clear.gif");
+        Response response = requestHandler.handleRequest(req);
+        assertThat(Base64.encodeBase64String(response.getBody().getBytes("ISO-8859-1")), equalTo("R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=="));
     }
 
     @Test

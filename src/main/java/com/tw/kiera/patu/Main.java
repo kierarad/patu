@@ -6,6 +6,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang.CharSetUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -13,6 +14,7 @@ import org.kohsuke.args4j.Option;
 import java.io.*;
 import java.net.*;
 import java.lang.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -86,7 +88,7 @@ class Main {
                     String request = readRequest(client.getInputStream());
                     Response response = new RequestParser().parseAndHandleRequest(request);
                     OutputStream output = client.getOutputStream();
-                    output.write(response.toString().getBytes());
+                    output.write(response.toString().getBytes(Settings.getInstance().getCharset()));
                     System.out.println(String.format("[HTTP %d %s] - %s", response.getStatusCode(), response.getStatusLine(), client.getRemoteSocketAddress()));
                 } catch (Exception e) {
                     System.out.println(String.format("error handling %s: %s", client.getRemoteSocketAddress(), e.getMessage()));
@@ -115,15 +117,12 @@ class Main {
 	}
 
 	public static void main (String... args) throws java.lang.Exception {
-        System.out.println("ENV variables");
-        System.out.println(System.getenv("HOSTNAME"));
-        System.out.println(System.getenv());
         System.out.println("Main received: " + Arrays.asList(args));
         new Main(args).startAsync();
 	}
 
     static String readRequest(InputStream input) throws IOException {
-        LineIterator lineIterator = IOUtils.lineIterator(input, "UTF-8");
+        LineIterator lineIterator = IOUtils.lineIterator(input, Settings.getInstance().getCharset().toString());
         List<String> lines = new ArrayList<String>();
 
         while (true) {

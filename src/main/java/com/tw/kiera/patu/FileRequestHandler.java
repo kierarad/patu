@@ -35,7 +35,7 @@ public class FileRequestHandler implements RequestHandler {
 
 
     private String respondWithResource(File requestedFile) throws IOException {
-        return IOUtils.toString(new FileInputStream(requestedFile));
+        return IOUtils.toString(new FileInputStream(requestedFile), Settings.getInstance().getCharset().toString());
     }
 
 

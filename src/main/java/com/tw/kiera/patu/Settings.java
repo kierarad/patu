@@ -7,6 +7,7 @@ import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
+import java.nio.charset.Charset;
 
 
 public class Settings {
@@ -18,6 +19,7 @@ public class Settings {
     private String hostname;
     private final URLCodec urlCodec = new URLCodec();
     private int port;
+    private final Charset charset = Charset.forName("ISO-8859-1");
 
     public static Settings getInstance() {
         return INSTANCE;
@@ -81,5 +83,9 @@ public class Settings {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public Charset getCharset() {
+        return charset;
     }
 }
