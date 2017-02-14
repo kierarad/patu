@@ -36,9 +36,6 @@ class Main {
     @Option(name="-h", usage="external hostname")
     private String hostname = MoreObjects.firstNonNull(System.getenv("HOSTNAME"), "localhost");
 
-    @Option(name="--basic-auth", usage="require basic authentication")
-    private boolean basicAuthOn = false;
-
     private boolean isRunning;
     private Thread mainThread;
     private ServerSocket serverSocket;
@@ -64,7 +61,6 @@ class Main {
             Settings.getInstance().setDirectoryBrowsingEnabled(directoryBrowsingEnabled);
             Settings.getInstance().setHostname(hostname);
             Settings.getInstance().setPort(port);
-            Settings.getInstance().setBasicAuthOn(basicAuthOn);
         } catch (CmdLineException e) {
             parser.printUsage(System.err);
             throw new RuntimeException(e);

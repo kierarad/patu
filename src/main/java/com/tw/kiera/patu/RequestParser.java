@@ -22,16 +22,12 @@ public class RequestParser {
 
         Map<String, String> headers = parseHeaders(requestLines);
 
-        if(Settings.getInstance().isBasicAuthOn()) {
-            String authHeader = headers.get("Authorization");
-            BasicAuth basicAuth = new BasicAuth();
-            basicAuth.authenticate(authHeader);
-            if (basicAuth.isNotAuthorized()){
-                Response response = new Response(401, "Not Authorized");
-                response.setHeader("WWW-Authenticate", "Basic realm='patu'");
-                return response;
-            }
-        }
+//        if (!headers.containsKey("Authorization")){
+//            Response response = new Response(401, "Not Authorized");
+//            response.setHeader("WWW-Authenticate", "Basic realm='patu'");
+//            return response;
+//        }
+
         try {
             ValidationResult result = validate(headers);
             if (result.isInvalid()) {

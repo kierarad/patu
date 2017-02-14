@@ -20,7 +20,6 @@ public class Settings {
     private final URLCodec urlCodec = new URLCodec();
     private int port;
     private final Charset charset = Charset.forName("ISO-8859-1");
-    private boolean basicAuthOn;
 
     public static Settings getInstance() {
         return INSTANCE;
@@ -88,13 +87,5 @@ public class Settings {
 
     public Charset getCharset() {
         return charset;
-    }
-
-    public void setBasicAuthOn(boolean basicAuthOn) {
-        this.basicAuthOn = basicAuthOn;
-    }
-
-    public boolean isBasicAuthOn() {
-        return basicAuthOn;
     }
 }

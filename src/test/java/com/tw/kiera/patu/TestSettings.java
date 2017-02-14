@@ -8,6 +8,5 @@ public class TestSettings {
         Settings.getInstance().setDirectoryBrowsingEnabled(false);
         Settings.getInstance().setHostname("test.host");
         Settings.getInstance().setPort(8080);
-        Settings.getInstance().setBasicAuthOn(false);
     }
 }
